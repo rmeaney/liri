@@ -2,17 +2,44 @@
 
 var selection = process.argv[2];
 var userQuery = process.argv[3];
+var convertedQuery;
 
 //set up requires
 	var fs = require('fs');
 	var request = require('request');
-
-if(selection == 'my-tweets'){
-
-
 	var Twitter = require('twitter');
+	var Spotify = require('node-spotify-api');
 
 	var keys = require('./keys');
+
+if(selection == 'my-tweets'){
+	tweetMaker();
+}else if(selection == 'spotify-this-song'){
+ 	spotifyMaker(userQuery);
+}else if(selection == 'movie-this'){
+	movieMaker(userQuery);
+}else if(selection == 'do-what-it-says'){
+
+ doWhatItSays();
+
+//};
+}else{
+	console.log('not much');
+}
+
+
+//Convert Text for encoding
+function textCleaner(userText){
+
+	convertedQuery = userText.split(' ').join('+');
+	return convertedQuery;
+}
+
+//Twitter function
+
+function tweetMaker(){
+
+
 	var client = new Twitter(keys.twitApi);
 
 	 
@@ -33,16 +60,20 @@ if(selection == 'my-tweets'){
 				console.log('this is far back as I am willing to take you.');
 			}
 		}
-		
 	}
-}else if(selection == 'spotify-this-song'){
-	var Spotify = require('node-spotify-api');
- 	var keys = require('./keys');
+}
+
+//spottify Function
+
+function spotifyMaker(songChosen){
+
 	var spotify = new Spotify(keys.spotApi);
-	var spotSearch = userQuery.split(' ').join('+');
+	//var spotSearch = userQuery.split(' ').join('+');
+	textCleaner(songChosen);
+	//console.log(convertedQuery);
 
  
-spotify.search({ type: 'track', query: spotSearch }, function(err, data) {
+spotify.search({ type: 'track', query: convertedQuery }, function(err, data) {
 		  if (err) {
 		    return console.log('Error occurred: ' + err);
 		  }
@@ -72,13 +103,16 @@ spotify.search({ type: 'track', query: spotSearch }, function(err, data) {
 			//logResults("Listen at: " + data.tracks.items[1].external_urls.spotify);
 			//logResults("Album: " + data.tracks.items[1].album.name);
 		}); 
-}else if(selection = 'movie-this'){
-	var keys = require('./keys');
+}
+
+// OMDB functions
+function movieMaker(movieChosen){
 	var getMovieApi = keys.omdbApi.movieApi;
-	var convertedTitle = userQuery.split(' ').join('+');
+	//var convertedTitle = userQuery.split(' ').join('+');
+	textCleaner(movieChosen);
 
 
-	request("http://www.omdbapi.com/?t=" + convertedTitle + "&y=&plot=short&tomatoes=true&r=json&apikey=" + getMovieApi, function(error, response, body) {
+	request("http://www.omdbapi.com/?t=" + movieChosen + "&y=&plot=short&tomatoes=true&r=json&apikey=" + getMovieApi, function(error, response, body) {
 
   // If the request is successful (i.e. if the response status code is 200)
   if (!error && response.statusCode === 200) {
@@ -96,10 +130,10 @@ spotify.search({ type: 'track', query: spotSearch }, function(err, data) {
 
   }
 });
+}
 
-}else if(selection == 'do-what-it-says'){
-
-//	function doWhatItSays(){
+//do what it says function
+function doWhatItSays(){
 	fs.readFile("./random.txt", "utf8", function(error, data){
 		if (error){
 			return console.log(error);
@@ -108,16 +142,11 @@ spotify.search({ type: 'track', query: spotSearch }, function(err, data) {
 		var brokenText = data.split(',')
 
 		selection= brokenText[0];
-		userQuery = brokenText[1];
+		specialQuery = brokenText[1];
+		console.log(specialQuery);
+		spotifyMaker(specialQuery);
 
 		//checkInput();
 	});
-//};
-}//else if(selection != 'do-what-it-says' && selection != 'movie-this' && selection != 'my-tweets' && selection != 'spotify-this-song'){
-//	console.log('that is not a valid choice.');
-//	console.log('\nFor Twitter, Please Type: my-tweets');
-//	console.log('\nFor Spotify, Please Type: spotify-this-song');
-//	console.log('\nFor OMDB, Please Type: movie-this');
-//	console.log('\n For a secret function, Please Type: do-what-it-says');
-//}
-
+	
+}
