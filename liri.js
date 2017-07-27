@@ -105,15 +105,7 @@ spotify.search({ type: 'track', query: convertedQuery }, function(err, data) {
 
 		 	}
 
-			//console.log("Artist: " + data.tracks.items[8].artists[0].name); 
-			//console.log("Song name: " + data.tracks.items[8].name); 
-			//console.log("Listen at: " + data.tracks.items[1].external_urls.spotify); 
-			//console.log("Album: " + data.tracks.items[1].album.name); 
-
-			//logResults("Artist: " + data.tracks.items[1].artists[0].name);
-			//logResults("Song name: " + data.tracks.items[1].name);
-			//logResults("Listen at: " + data.tracks.items[1].external_urls.spotify);
-			//logResults("Album: " + data.tracks.items[1].album.name);
+			
 		}); 
 }
 
@@ -129,8 +121,6 @@ function movieMaker(movieChosen){
   // If the request is successful (i.e. if the response status code is 200)
   if (!error && response.statusCode === 200) {
 
-    // Parse the body of the site and recover just the imdbRating
-    // (Note: The syntax below for parsing isn't obvious. Just spend a few moments dissecting it).
     console.log('Title: ' + JSON.parse(body).Title);
     console.log('Year: ' + JSON.parse(body).Year);
     console.log("IMDB Rating: " + JSON.parse(body).imdbRating);
@@ -146,9 +136,6 @@ function movieMaker(movieChosen){
     writeThatDown("\r\nLanguage: " + JSON.parse(body).Language);
     writeThatDown("\r\nPlot: " + JSON.parse(body).Plot);
      writeThatDown("\r\nStarring: " + JSON.parse(body).Actors)
-
-
-
 
 
   }
@@ -196,10 +183,6 @@ function cleanSheet(){
   if (err) {
     return console.log(err);
   }
-
- 
-  //console.log("your experience has been recorded.");
-
 
 });
 }
