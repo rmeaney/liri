@@ -11,6 +11,7 @@ var convertedQuery;
 	var Spotify = require('node-spotify-api');
 
 	var keys = require('./keys');
+	cleanSheet();
 
 if(selection == 'my-tweets'){
 	tweetMaker();
@@ -56,6 +57,9 @@ function tweetMaker(){
 			console.log('\nText: ' + tweets[i].text);
 			console.log('\nDate: ' + tweets[i].created_at);
 			console.log('-----------');
+			writeThatDown("\r\nText: " + tweets[i].text);
+			writeThatDown("\r\nDate: " + tweets[i].created_at);
+			writeThatDown("\r\n------------");
 			if(i == tweets.length - 1){
 				console.log('this is far back as I am willing to take you.');
 			}
@@ -91,6 +95,14 @@ spotify.search({ type: 'track', query: convertedQuery }, function(err, data) {
 		 		console.log('Album: ' + spottCheck[i].album.name);
 		 		console.log('Url: ' + spottCheck[i].external_urls.spotify);
 		 		console.log('----------------');
+		 		writeThatDown("\r\nSong: " + spottCheck[i].name);
+		 		writeThatDown("\r\nArtist: " + spottCheck[i].artists[0].name);
+		 		writeThatDown("\r\nAlbum: " + spottCheck[i].album.name);
+		 		writeThatDown("\r\nURL: " + spottCheck[i].external_urls.spotify);
+		 		writeThatDown("\r\n------------");
+
+
+
 		 	}
 
 			//console.log("Artist: " + data.tracks.items[8].artists[0].name); 
@@ -127,6 +139,17 @@ function movieMaker(movieChosen){
     console.log("Language: " + JSON.parse(body).Language);
     console.log("Plot: " + JSON.parse(body).Plot);
     console.log("Starring: " + JSON.parse(body).Actors);
+    writeThatDown("\r\nTitle: " + JSON.parse(body).Title);
+    writeThatDown("\r\nYear: " + JSON.parse(body).Year);
+    writeThatDown("\r\nRotten Tomatoes score: " + JSON.parse(body).Ratings[1].Value);
+    writeThatDown("\r\nCountry: " + JSON.parse(body).Country);
+    writeThatDown("\r\nLanguage: " + JSON.parse(body).Language);
+    writeThatDown("\r\nPlot: " + JSON.parse(body).Plot);
+     writeThatDown("\r\nStarring: " + JSON.parse(body).Actors)
+
+
+
+
 
   }
 });
@@ -146,7 +169,37 @@ function doWhatItSays(){
 		console.log(specialQuery);
 		spotifyMaker(specialQuery);
 
-		//checkInput();
+		
 	});
 	
+}
+
+//export text document
+function writeThatDown(ideas){
+	fs.appendFile("liriResults.txt", ideas, function(err) {
+
+  // If the code experiences any errors it will log the error to the console.
+  if (err) {
+    return console.log(err);
+  }
+
+ 
+  //console.log("your experience has been recorded.");
+
+
+});
+}
+function cleanSheet(){
+	fs.writeFile("liriResults.txt", '', function(err) {
+
+  // If the code experiences any errors it will log the error to the console.
+  if (err) {
+    return console.log(err);
+  }
+
+ 
+  //console.log("your experience has been recorded.");
+
+
+});
 }
